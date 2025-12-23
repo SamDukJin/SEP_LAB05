@@ -20,6 +20,7 @@ class Simple_drawing_window(QWidget):
             QPoint(130, 100), QPoint(100, 150),
         ])
         p.drawEllipse(100, 50, 150, 100)
+        p.drawRect(300, 300, 200, 200)
 
         p.setPen(QColor(255, 127, 0))
         p.setBrush(QColor(255, 127, 0))
@@ -34,7 +35,7 @@ class Simple_drawing_window(QWidget):
 
 def main():
     app = QApplication(sys.argv)
-    
+   
     w = Simple_drawing_window()
     w.show()
 
@@ -42,5 +43,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-
-
