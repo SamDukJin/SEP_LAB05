@@ -34,6 +34,7 @@ class Disk(object):
    def clearDisk(self):
       self.t.clear()
 
+<<<<<<< Updated upstream
 class Pole(object):
    def __init__(self, name="", xpos=0, ypos=0, thick=10, length=100):
       self.pname = name
@@ -74,3 +75,5 @@ class Pole(object):
          return disk
       return None
 
+=======
+>>>>>>> Stashed changes
