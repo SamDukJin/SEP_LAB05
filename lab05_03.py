@@ -1,98 +1,123 @@
 import turtle as t
+import time
+
+# ---------------- Disk ----------------
+import turtle as t
 
 class Disk(object):
-   def __init__(self, name="", xpos=0, ypos=0, height=20, width=40):
-      self.dname = name
-      self.dxpos = xpos
-      self.dypos = ypos
-      self.dheight = height
-      self.dwidth = width
-      self.t = t.t()
-      self.t.speed(0)
-      self.t.hidet()
-   
-   def showDisk(self):
-      self.t.penup()
-      self.t.goto(self.dxpos, self.dypos)
-      self.t.pendown()
-      self.t.begin_fill()
-      self.t.color("black", "white")
-      for _ in range(2):
-         self.t.forward(self.dwidth)
-         self.t.left(90)
-         self.t.forward(self.dheight)
-         self.t.left(90)
-      self.t.end_fill()
-   
-   
-   def newpos(self,xpos,ypos):
-      self.t.clear()
-      self.dxpos = xpos
-      self.dypos = ypos
-      self.showDisk()
-   
-   def clearDisk(self):
-      self.t.clear()
-      
+    def __init__(self, name="", xpos=0, ypos=0, height=20, width=40):
+        self.dname = name
+        self.dxpos = xpos
+        self.dypos = ypos
+        self.dheight = height
+        self.dwidth = width
+
+        self.t = t.Turtle()
+        self.t.speed(0)
+        self.t.hideturtle()
+
+    def showDisk(self):
+        self.t.penup()
+
+        # Center the disk horizontally
+        self.t.goto(self.dxpos - self.dwidth / 2, self.dypos)
+
+        self.t.setheading(0)
+        self.t.pendown()
+        self.t.color("black", "white")
+        self.t.begin_fill()
+
+        # Draw FULL rectangle (4 sides)
+        self.t.forward(self.dwidth)
+        self.t.left(90)
+        self.t.forward(self.dheight)
+        self.t.left(90)
+        self.t.forward(self.dwidth)
+        self.t.left(90)
+        self.t.forward(self.dheight)
+        self.t.left(90)
+
+        self.t.end_fill()
+        self.t.penup()
+
+    def newpos(self, xpos, ypos):
+        self.dxpos = xpos
+        self.dypos = ypos
+        self.t.clear()
+        self.showDisk()
+
+    def clearDisk(self):
+        self.t.clear()
+
+
+
+# ---------------- Pole ----------------
 class Pole(object):
-   def init(self, name="", xpos=0, ypos=0, thick=10, length=100):
-      self.pname = name
-      self.stack = []
-      self.toppos = 0
-      self.pxpos = xpos
-      self.pypos = ypos
-      self.pthick = thick
-      self.plength = length
+    def __init__(self, name="", xpos=0, ypos=0, thick=10, length=120):
+        self.pname = name
+        self.stack = []
+        self.pxpos = xpos
+        self.pypos = ypos
+        self.pthick = thick
+        self.plength = length
 
-   def showpole(self):
-      t.penup()
-      t.goto(self.pxpos, self.pypos)
-      t.setheading(0)
-      t.pendown()
-      
-      for _ in range(2):
-         t.forward(self.pthick)
-         t.left(90)
-         t.forward(self.plength)
-         t.left(90)
-         
-      t.penup()
-      t.goto(self.pxpos, self.pypos)
-      t.setheading(0)
+        self.t = t.Turtle()
+        self.t.speed(0)
+        self.t.hideturtle()
 
-   def pushdisk(self, disk):
-      new_y = self.pypos + (len(self.stack) * disk.dheight)
-      disk.newpos(self.pxpos + self.pthick/2, new_y)
-      
-      self.stack.append(disk)
-      disk.showdisk()
+    def showpole(self):
+        self.t.penup()
+        self.t.goto(self.pxpos, self.pypos)
+        self.t.setheading(0)
+        self.t.pendown()
 
-   def popdisk(self):
-      if len(self.stack) > 0:
-         disk = self.stack.pop()
-         disk.cleardisk()
-         return disk
-      return None
-   
+        for _ in range(2):
+            self.t.forward(self.pthick)
+            self.t.left(90)
+            self.t.forward(self.plength)
+            self.t.left(90)
+
+        self.t.penup()
+
+    def pushdisk(self, disk):
+        new_y = self.pypos + (len(self.stack) * disk.dheight)
+        disk.newpos(self.pxpos + self.pthick / 2, new_y)
+        self.stack.append(disk)
+        time.sleep(0.3)
+
+    def popdisk(self):
+        if self.stack:
+            disk = self.stack.pop()
+            disk.clearDisk()
+            return disk
+        return None
+
+
+# ---------------- Hanoi ----------------
 class Hanoi(object):
-    """Hanoi class to solve Tower of Hanoi puzzle"""
-    def __init__(self, n=3, start="A", workspace="B", destination="C"):
-        self.startp = Pole(start, 0, 0)
-        self.workspacep = Pole(workspace, 150, 0)
-        self.destinationp = Pole(destination, 300, 0)
-        
+    def __init__(self, n=3):
+        self.startp = Pole("A", -150, 0)
+        self.workspacep = Pole("B", 0, 0)
+        self.destinationp = Pole("C", 150, 0)
+
         self.startp.showpole()
         self.workspacep.showpole()
         self.destinationp.showpole()
-        
+
         for i in range(n):
-            disk = Disk("d" + str(i), 0, i * 20, 20, (n - i) * 30)
+            disk = Disk(
+                "d" + str(i + 1),
+                0,
+                i * 20,
+                20,
+                (n - i) * 30
+            )
             self.startp.pushdisk(disk)
-    
+
     def move_disk(self, start, destination):
         disk = start.popdisk()
         destination.pushdisk(disk)
-    
+
     def move_tower(self, n, s, w, d):
         if n == 1:
             self.move_disk(s, d)
@@ -100,7 +125,19 @@ class Hanoi(object):
             self.move_tower(n - 1, s, d, w)
             self.move_disk(s, d)
             self.move_tower(n - 1, w, s, d)
-    
+
     def solve(self):
-        n = len(self.startp.stack)
-        self.move_tower(n, self.startp, self.workspacep, self.destinationp)
+        self.move_tower(len(self.startp.stack),
+                        self.startp,
+                        self.workspacep,
+                        self.destinationp)
+
+
+# ---------------- Run ----------------
+screen = t.Screen()
+screen.title("Tower of Hanoi")
+
+h = Hanoi(4)
+h.solve()
+
+screen.mainloop()
