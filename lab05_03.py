@@ -34,46 +34,33 @@ class Disk(object):
    def clearDisk(self):
       self.t.clear()
 
-<<<<<<< Updated upstream
-class Pole(object):
-   def __init__(self, name="", xpos=0, ypos=0, thick=10, length=100):
-      self.pname = name
-      self.stack = []
-      self.toppos = 0
-      self.pxpos = xpos
-      self.pypos = ypos
-      self.pthick = thick
-      self.plength = length
-
-   def showpole(self):
-      t.penup()
-      t.goto(self.pxpos, self.pypos)
-      t.setheading(0)
-      t.pendown()
-      
-      for _ in range(2):
-         t.forward(self.pthick)
-         t.left(90)
-         t.forward(self.plength)
-         t.left(90)
-         
-      t.penup()
-      t.goto(self.pxpos, self.pypos)
-      t.setheading(0)
-
-   def pushdisk(self, disk):
-      new_y = self.pypos + (len(self.stack) * disk.dheight)
-      disk.newpos(self.pxpos + self.pthick/2, new_y)
-      
-      self.stack.append(disk)
-      disk.showdisk()
-
-   def popdisk(self):
-      if len(self.stack) > 0:
-         disk = self.stack.pop()
-         disk.cleardisk()
-         return disk
-      return None
-
-=======
->>>>>>> Stashed changes
+class Hanoi(object):
+    """Hanoi class to solve Tower of Hanoi puzzle"""
+    def __init__(self, n=3, start="A", workspace="B", destination="C"):
+        self.startp = Pole(start, 0, 0)
+        self.workspacep = Pole(workspace, 150, 0)
+        self.destinationp = Pole(destination, 300, 0)
+        
+        self.startp.showpole()
+        self.workspacep.showpole()
+        self.destinationp.showpole()
+        
+        for i in range(n):
+            disk = Disk("d" + str(i), 0, i * 20, 20, (n - i) * 30)
+            self.startp.pushdisk(disk)
+    
+    def move_disk(self, start, destination):
+        disk = start.popdisk()
+        destination.pushdisk(disk)
+    
+    def move_tower(self, n, s, w, d):
+        if n == 1:
+            self.move_disk(s, d)
+        else:
+            self.move_tower(n - 1, s, d, w)
+            self.move_disk(s, d)
+            self.move_tower(n - 1, w, s, d)
+    
+    def solve(self):
+        n = len(self.startp.stack)
+        self.move_tower(n, self.startp, self.workspacep, self.destinationp)
